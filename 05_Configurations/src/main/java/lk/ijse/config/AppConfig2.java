@@ -1,25 +1,25 @@
 package lk.ijse.config;
 
-import lk.ijse.bean.A;
-import lk.ijse.bean.B;
+import lk.ijse.bean.C;
+import lk.ijse.bean.D;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan(basePackages = "lk.ijse.bean")
-public class AppConfig1 {
-    public AppConfig1() {
-        System.out.println("AppConfig1 constructor");
+public class AppConfig2 {
+    public AppConfig2() {
+        System.out.println("AppConfig2 constructor");
     }
 
     @Bean
-    public A A(){
-        return new A();
+    public C c(){
+        return new C();
     }
 
     @Bean
-    public B B(){
-        return new B();
+    public D d(){
+        return new D();
     }
 }

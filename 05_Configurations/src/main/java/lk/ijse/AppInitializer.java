@@ -1,6 +1,8 @@
 package lk.ijse;
 
 import lk.ijse.config.AppConfig;
+import lk.ijse.config.AppConfig1;
+import lk.ijse.config.AppConfig2;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class AppInitializer {
