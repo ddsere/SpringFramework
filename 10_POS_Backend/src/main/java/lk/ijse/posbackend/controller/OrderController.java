@@ -1,8 +1,8 @@
 package lk.ijse.posbackend.controller;
 
 
-import org.example.posbackend.dto.OrderDTO;
-import org.example.posbackend.service.OrderService;
+import lk.ijse.posbackend.dto.OrderDTO;
+import lk.ijse.posbackend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

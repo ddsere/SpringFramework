@@ -1,6 +1,6 @@
 package lk.ijse.posbackend.exception;
 
-import org.example.posbackend.utill.APIResponse;
+import lk.ijse.posbackend.utill.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

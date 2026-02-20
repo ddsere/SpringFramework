@@ -1,14 +1,14 @@
 package lk.ijse.posbackend.service.impl;
 
-import org.example.posbackend.dto.OrderDTO;
-import org.example.posbackend.dto.OrderDetailDTO;
-import org.example.posbackend.entity.Item;
-import org.example.posbackend.entity.OrderDetail;
-import org.example.posbackend.entity.Orders;
-import org.example.posbackend.repository.ItemRepository;
-import org.example.posbackend.repository.OrderDetailRepository;
-import org.example.posbackend.repository.OrderRepository;
-import org.example.posbackend.service.OrderService;
+import lk.ijse.posbackend.dto.OrderDTO;
+import lk.ijse.posbackend.dto.OrderDetailDTO;
+import lk.ijse.posbackend.entity.Item;
+import lk.ijse.posbackend.entity.OrderDetail;
+import lk.ijse.posbackend.entity.Orders;
+import lk.ijse.posbackend.repository.ItemRepository;
+import lk.ijse.posbackend.repository.OrderDetailRepository;
+import lk.ijse.posbackend.repository.OrderRepository;
+import lk.ijse.posbackend.service.OrderService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

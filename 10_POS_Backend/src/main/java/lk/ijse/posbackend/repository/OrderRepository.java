@@ -1,6 +1,6 @@
 package lk.ijse.posbackend.repository;
 
-import org.example.posbackend.entity.Orders;
+import lk.ijse.posbackend.entity.Orders;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

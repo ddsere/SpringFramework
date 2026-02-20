@@ -1,9 +1,9 @@
 package lk.ijse.posbackend.controller;
 
 import jakarta.validation.Valid;
-import org.example.posbackend.dto.ItemDTO;
-import org.example.posbackend.service.ItemService;
-import org.example.posbackend.utill.APIResponse;
+import lk.ijse.posbackend.dto.ItemDTO;
+import lk.ijse.posbackend.service.ItemService;
+import lk.ijse.posbackend.utill.APIResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

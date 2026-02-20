@@ -1,10 +1,10 @@
 package lk.ijse.posbackend.service.impl;
 
-import org.example.posbackend.dto.CustomerDTO;
-import org.example.posbackend.entity.Customer;
-import org.example.posbackend.exception.CustomException;
-import org.example.posbackend.repository.CustomerRepository;
-import org.example.posbackend.service.CustomerService;
+import lk.ijse.posbackend.dto.CustomerDTO;
+import lk.ijse.posbackend.entity.Customer;
+import lk.ijse.posbackend.exception.CustomException;
+import lk.ijse.posbackend.repository.CustomerRepository;
+import lk.ijse.posbackend.service.CustomerService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;

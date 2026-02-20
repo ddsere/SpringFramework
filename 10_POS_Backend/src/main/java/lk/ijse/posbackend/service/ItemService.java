@@ -1,6 +1,6 @@
 package lk.ijse.posbackend.service;
 
-import org.example.posbackend.dto.ItemDTO;
+import lk.ijse.posbackend.dto.ItemDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
