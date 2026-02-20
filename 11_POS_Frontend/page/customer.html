@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f9f9f9; }
+    .form-container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 25px; }
+    .input-group { display: inline-block; margin-right: 15px; margin-bottom: 10px; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; color: #2c3e50; }
+    input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 180px; transition: 0.3s; }
+    input:focus { border-color: #3498db; outline: none; box-shadow: 0 0 5px rgba(52,152,219,0.3); }
+    #id { background: #f1f2f6; font-weight: bold; color: #2f3542; border: 1px solid #ced4da; cursor: not-allowed; }
+
+    .button-row { margin-top: 15px; }
+    button { padding: 10px 22px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: bold; margin-right: 8px; transition: 0.3s; }
+    .btn-save { background: #27ae60; } .btn-save:hover { background: #219150; }
+    .btn-update { background: #2980b9; } .btn-update:hover { background: #1f6391; }
+    .btn-delete { background: #e74c3c; } .btn-delete:hover { background: #c0392b; }
+
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    th, td { border-bottom: 1px solid #eee; padding: 14px; text-align: left; }
+    th { background: #34495e; color: white; text-transform: uppercase; font-size: 13px; }
+    tr:hover { background: #f8f9fa; cursor: pointer; }
+  </style>
+</head>
+<body>
+<div class="form-container">
+  <h2>Customer Management</h2>
+  <div class="input-group">
+    <label>Customer ID</label>
+    <input type="text" id="id" readonly>
+  </div>
+  <div class="input-group">
+    <label>Name</label>
+    <input type="text" id="name" placeholder="Enter Name">
+  </div>
+  <div class="input-group">
+    <label>Address</label>
+    <input type="text" id="address" placeholder="Enter Address">
+  </div>
+
+  <div class="button-row">
+    <button class="btn-save" onclick="saveCustomer()">Save</button>
+    <button class="btn-update" onclick="updateCustomer()">Update</button>
+    <button class="btn-delete" onclick="deleteCustomer()">Delete</button>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>Id</th><th>Name</th><th>Address</th></tr></thead>
+  <tbody id="tablebody"></tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  const regExCustName = /^[A-z ]{3,20}$/;
+  const regExCustAddress = /^[A-z0-9/ ,]{4,50}$/;
+
+  function generateNextId(lastId) {
+    if (!lastId) return "C001";
+    let number = parseInt(lastId.replace("C", "")) + 1;
+    return "C" + number.toString().padStart(3, '0');
+  }
+
+  function gettAllCustomers(){
+    $.ajax({
+      url:"http://localhost:8080/api/v1/customer/all",
+      method :"GET",
+      success : function (res){
+        $("#tablebody").empty();
+        let lastId = "";
+        for(let c of res){
+          $("#tablebody").append(`<tr><td>${c.id}</td><td>${c.name}</td><td>${c.address}</td></tr>`);
+          lastId = c.id;
+        }
+        $("#id").val(generateNextId(lastId));
+      }
+    });
+  }
+
+  function saveCustomer() {
+    if (!regExCustName.test($("#name").val())) { alert("Invalid Name!"); return; }
+    if (!regExCustAddress.test($("#address").val())) { alert("Invalid Address!"); return; }
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/customer",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({ id: $("#id").val(), name: $("#name").val(), address: $("#address").val() }),
+      success: function () {
+        alert("Customer Saved!");
+        clearFields();
+        gettAllCustomers(); }
+    });
+  }
+
+  function updateCustomer(){
+    $.ajax({
+      url: "http://localhost:8080/api/v1/customer",
+      method: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify({ id: $("#id").val(), name: $("#name").val(), address: $("#address").val() }),
+      success: function () {
+        alert("Customer Updated!");
+        clearFields();
+        gettAllCustomers(); }
+    });
+  }
+
+  function deleteCustomer(){
+    if(confirm("Are you sure?")){
+      $.ajax({
+        url: "http://localhost:8080/api/v1/customer/" + $("#id").val(),
+        method: "DELETE",
+        success: function () {
+          alert("Customer Deleted!");
+          clearFields();
+          gettAllCustomers(); }
+      });
+    }
+  }
+
+  $(document).on('click','table tbody tr',function (){
+    $("#id").val($(this).find('td:eq(0)').text());
+    $("#name").val($(this).find('td:eq(1)').text());
+    $("#address").val($(this).find('td:eq(2)').text());
+  });
+
+  function clearFields(){ $("#name,#address").val(""); }
+  $(document).ready(gettAllCustomers);
+</script>
+</body>
+</html>

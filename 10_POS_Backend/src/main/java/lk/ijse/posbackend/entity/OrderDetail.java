@@ -2,18 +2,28 @@ package lk.ijse.posbackend.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@IdClass(OrderDetailPK.class)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 
-public class Customer {
+@Entity
+
+public class OrderDetail {
     @Id
-    private String id;
-    private String name;
-    private String address;
+    private String orderID;
+    @Id
+    private String itemID;
+
+    private int itemQty;
+    private double unitPrice;
+
+
+
+
 }

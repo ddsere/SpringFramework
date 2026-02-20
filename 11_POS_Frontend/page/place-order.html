@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f4f4f4; }
+    .order-container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 25px; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; }
+    input, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-right: 10px; width: 160px; }
+
+    .button-row { margin-top: 20px; }
+    .btn-add { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn-confirm { background: #27ae60; color: white; border: none; padding: 15px 30px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 200px; margin-top: 20px; }
+
+    #cart_table { width: 100%; border-collapse: collapse; background: white; margin-top: 25px; }
+    #cart_table th, #cart_table td { border-bottom: 1px solid #eee; padding: 14px; text-align: left; }
+    #cart_table th { background: #2c3e50; color: white; }
+
+    .btn-edit { background: #f39c12; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+    .btn-remove { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+    #total_display { color: #e67e22; font-size: 24px; text-align: right; }
+  </style>
+</head>
+<body>
+
+<div class="order-container">
+  <h2>Place Order</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+    <div><label>Order ID</label><input type="text" id="order-id" placeholder="O001"></div>
+    <div><label>Customer</label><select id="order-customer-id"><option value="">Select Customer</option></select></div>
+    <div><label>Item</label><select id="order-item-id" onchange="updateItemPrice()"><option value="">Select Item</option></select></div>
+    <div><label>Unit Price</label><input type="text" id="order-item-price" readonly></div>
+    <div><label>Qty</label><input type="number" id="order-qty" placeholder="0"></div>
+  </div>
+  <div class="button-row">
+    <button class="btn-add" onclick="addToCart()">Add to Cart</button>
+  </div>
+</div>
+
+<table id="cart_table">
+  <thead>
+  <tr>
+    <th>Item ID</th>
+    <th>Unit Price</th>
+    <th>Qty</th>
+    <th>Total</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody id="cart_body"></tbody>
+</table>
+
+<h3 id="total_display">Total: 0.00</h3>
+<button class="btn-confirm" onclick="confirmOrder()">Confirm Order</button>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  let cart = [];
+  let itemsList = [];
+
+  function loadData() {
+    $.get("http://localhost:8080/api/v1/customer/all", function(res) {
+      res.forEach(c => $("#order-customer-id").append(`<option value="${c.id}">${c.id} - ${c.name}</option>`));
+    });
+
+    $.get("http://localhost:8080/api/v1/item/all", function(res) {
+      itemsList = res;
+      res.forEach(i => $("#order-item-id").append(`<option value="${i.itemId}">${i.itemId} - ${i.itemName}</option>`));
+    });
+  }
+
+  function updateItemPrice() {
+    const selectedId = $("#order-item-id").val();
+    const item = itemsList.find(i => i.itemId === selectedId);
+    if (item) $("#order-item-price").val(item.itemPrice);
+  }
+
+  function addToCart() {
+    const id = $("#order-item-id").val();
+    const price = parseFloat($("#order-item-price").val());
+    const qty = parseInt($("#order-qty").val());
+
+    if (!id || isNaN(price) || isNaN(qty) || qty <= 0) {
+      alert("Invalid input or empty fields!");
+      return;
+    }
+
+    const existing = cart.find(i => i.itemId === id);
+    if (existing) {
+      existing.qty += qty;
+    } else {
+      cart.push({ itemId: id, unitPrice: price, qty: qty });
+    }
+    renderCart();
+    $("#order-item-id, #order-item-price, #order-qty").val("");
+  }
+
+  function renderCart() {
+    $("#cart_body").empty();
+    let total = 0;
+    cart.forEach((item, index) => {
+      let subTotal = item.unitPrice * item.qty;
+      total += subTotal;
+      $("#cart_body").append(`
+                <tr>
+                    <td>${item.itemId}</td>
+                    <td>${item.unitPrice.toFixed(2)}</td>
+                    <td>${item.qty}</td>
+                    <td>${subTotal.toFixed(2)}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editCartItem(${index})">Edit</button>
+                        <button class="btn-remove" onclick="removeFromCart(${index})">Remove</button>
+                    </td>
+                </tr>
+            `);
+    });
+    $("#total_display").text("Total: " + total.toFixed(2));
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    renderCart();
+  }
+
+  function editCartItem(index) {
+    const item = cart[index];
+    $("#order-item-id").val(item.itemId);
+    $("#order-item-price").val(item.unitPrice);
+    $("#order-qty").val(item.qty);
+    cart.splice(index, 1);
+    renderCart();
+  }
+
+  function confirmOrder() {
+    const orderId = $("#order-id").val();
+    const custId = $("#order-customer-id").val();
+
+    if (!orderId || !custId || cart.length === 0) {
+      alert("Order ID, Customer, or Cart cannot be empty!");
+      return;
+    }
+
+    const orderData = {
+      orderID: orderId,
+      date: new Date().toISOString().split('T')[0],
+      customerID: custId,
+      orderDetailDTOList: cart.map(item => ({
+        itemId: item.itemId,
+        itemQty: item.qty,
+        unitPrice: item.unitPrice
+      }))
+    };
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/order",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(orderData),
+      success: function() {
+        alert("Order Placed!");
+        cart = [];
+        renderCart();
+        $("#order-id, #order-customer-id").val("");
+      },
+      error: function() {
+        alert("Order Failed!");
+      }
+    });
+  }
+
+  $(document).ready(loadData);
+</script>
+</body>
+</html>

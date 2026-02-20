@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f4f4f4; }
+    .form-container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 25px; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; }
+    input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-right: 10px; width: 140px; }
+    #item-id { background: #f1f2f6; font-weight: bold; cursor: not-allowed; }
+
+    .button-row { margin-top: 20px; }
+    button { padding: 10px 22px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: bold; margin-right: 8px; }
+    .btn-save { background: #27ae60; }
+    .btn-update { background: #2980b9; }
+    .btn-delete { background: #e74c3c; }
+
+    table { width: 100%; border-collapse: collapse; background: white; margin-top: 25px; }
+    th, td { border-bottom: 1px solid #eee; padding: 14px; text-align: left; }
+    th { background: #2c3e50; color: white; }
+    tr:hover { background: #f8f9fa; cursor: pointer; }
+  </style>
+</head>
+<body>
+<div class="form-container">
+  <h2>Item Management</h2>
+  <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+    <div><label>Item ID</label><input type="text" id="item-id" readonly></div>
+    <div><label>Name</label><input type="text" id="item-name" placeholder="Item Name"></div>
+    <div><label>Price</label><input type="text" id="item-price" placeholder="0.00"></div>
+    <div><label>Qty</label><input type="text" id="item-quantity" placeholder="0"></div>
+  </div>
+
+  <div class="button-row">
+    <button class="btn-save" onclick="saveItem()">Save</button>
+    <button class="btn-update" onclick="updateItem()">Update</button>
+    <button class="btn-delete" onclick="deleteItem()">Delete</button>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>Item ID</th><th>Name</th><th>Price</th><th>Qty</th></tr></thead>
+  <tbody id="tablebody"></tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  function generateNextItemId(lastId) {
+    if (!lastId) return "I001";
+    let number = parseInt(lastId.replace("I", "")) + 1;
+    return "I" + number.toString().padStart(3, '0');
+  }
+
+  function getAllItem(){
+    $.ajax({
+      url: "http://localhost:8080/api/v1/item/all",
+      method: "GET",
+      success: function (res){
+        $("#tablebody").empty();
+        let lastId = "";
+        for (let i of res){
+          $("#tablebody").append(`<tr><td>${i.itemId}</td><td>${i.itemName}</td><td>${i.itemPrice}</td><td>${i.itemQuantity}</td></tr>`);
+          lastId = i.itemId;
+        }
+        $("#item-id").val(generateNextItemId(lastId));
+      }
+    });
+  }
+
+  function saveItem(){
+    const name = $("#item-name").val();
+    const price = $("#item-price").val();
+    const qty = $("#item-quantity").val();
+
+    if (name === "" || price === "" || qty === "") {
+      alert("Fields can't be empty!");
+      return;
+    }
+
+    if (parseFloat(price) <= 0 || parseInt(qty) <= 0) {
+      alert("Price and Quantity must be greater than 0!");
+      return;
+    }
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/item",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({ itemId: $("#item-id").val(), itemName: name, itemPrice: price, itemQuantity: qty }),
+      success : function (){
+        alert("Item Saved!");
+        clearFields();
+        getAllItem();
+      }
+    });
+  }
+
+  function updateItem(){
+    const name = $("#item-name").val();
+    const price = $("#item-price").val();
+    const qty = $("#item-quantity").val();
+
+    if (name === "" || price === "" || qty === "") {
+      alert("Fields can't be empty!");
+      return;
+    }
+
+    if (parseFloat(price) <= 0 || parseInt(qty) <= 0) {
+      alert("Price and Quantity must be greater than 0!");
+      return;
+    }
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/item",
+      method: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify({ itemId: $("#item-id").val(), itemName: name, itemPrice: price, itemQuantity: qty }),
+      success: function () {
+        alert("Item Updated!");
+        clearFields();
+        getAllItem();
+      }
+    });
+  }
+
+  function deleteItem(){
+    if(confirm("Delete this item?")){
+      $.ajax({
+        url: "http://localhost:8080/api/v1/item/" + $("#item-id").val(),
+        method: "DELETE",
+        success: function () { alert("Item Deleted!"); clearFields(); getAllItem(); }
+      });
+    }
+  }
+
+  $(document).on('click','table tbody tr',function (){
+    $("#item-id").val($(this).find('td:eq(0)').text());
+    $("#item-name").val($(this).find('td:eq(1)').text());
+    $("#item-price").val($(this).find('td:eq(2)').text());
+    $("#item-quantity").val($(this).find('td:eq(3)').text());
+  });
+
+  function clearFields(){ $("#item-name,#item-price,#item-quantity").val(""); }
+  $(document).ready(getAllItem);
+</script>
+</body>
+</html>

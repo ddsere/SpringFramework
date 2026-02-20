@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 
-public class Customer {
+public class Item {
     @Id
-    private String id;
-    private String name;
-    private String address;
+    private String itemId;
+    private String itemName;
+    private String itemPrice;
+    private String itemQuantity;
 }

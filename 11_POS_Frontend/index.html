@@ -2,18 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>POS</title>
+    <title>Modern POS System</title>
     <style>
-        a {
-            text-decoration: none;
-            color: black;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f7f6; }
+        header { background: #2c3e50; color: white; padding: 1rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        nav { background: #34495e; display: flex; justify-content: center; padding: 10px; }
+        nav a { color: white; text-decoration: none; padding: 10px 20px; margin: 0 5px; border-radius: 4px; transition: 0.3s; cursor: pointer; font-weight: bold; }
+        nav a:hover { background: #1abc9c; }
+        iframe { width: 100%; height: calc(100vh - 130px); border: none; margin-top: 10px; }
     </style>
 </head>
 <body>
-<h1>POS Management System</h1>
-<a href="pages/customer.html">Manage Customer</a></br>
-<a href="pages/item.html">Manage Item</a></br>
-<a href="pages/place-order.html">Place-Order</a></br>
+
+<header><h1>POS SYSTEM</h1></header>
+<nav>
+    <a onclick="loadPage('page/customer.html')">Customer</a>
+    <a onclick="loadPage('page/item.html')">Items</a>
+    <a onclick="loadPage('page/place-order.html')">Place Order</a>
+</nav>
+
+<iframe src="page/customer.html" id="contentFrame"></iframe>
+
+<script>
+    function loadPage(url){
+        document.getElementById('contentFrame').src = url;
+    }
+</script>
 </body>
 </html>
