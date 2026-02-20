@@ -8,11 +8,11 @@
         <version>4.0.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>lk.ijse</groupId>
+    <groupId>org.example</groupId>
     <artifactId>posbackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>10_POS_Backend</name>
-    <description>10_POS_Backend</description>
+    <name>10_Pos_Back_End</name>
+    <description>10_Pos_Back_End</description>
     <url/>
     <licenses>
         <license/>
@@ -27,7 +27,7 @@
         <url/>
     </scm>
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -60,6 +60,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
         <dependency>
