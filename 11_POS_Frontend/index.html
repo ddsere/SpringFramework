@@ -2,31 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Modern POS System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark POS System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f7f6; }
-        header { background: #2c3e50; color: white; padding: 1rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        nav { background: #34495e; display: flex; justify-content: center; padding: 10px; }
-        nav a { color: white; text-decoration: none; padding: 10px 20px; margin: 0 5px; border-radius: 4px; transition: 0.3s; cursor: pointer; font-weight: bold; }
-        nav a:hover { background: #1abc9c; }
-        iframe { width: 100%; height: calc(100vh - 130px); border: none; margin-top: 10px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #121212; /* Dark Background */
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header - SYSTEM නම පමණි */
+        header {
+            background: #1f1f1f;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            border-bottom: 1px solid #333;
+        }
+
+        /* මැද කොටස */
+        .main-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            padding: 20px;
+        }
+
+        /* Navigation Cards - Solid Colors */
+        .nav-card {
+            width: 260px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        .nav-card i {
+            font-size: 3.5rem; /* Icon size */
+            margin-bottom: 15px;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            filter: brightness(1.1);
+        }
+
+        /* Solid Colors */
+        .customer-card { background-color: #27ae60; } /* Solid Green */
+        .item-card { background-color: #2980b9; }     /* Solid Blue */
+        .order-card { background-color: #d35400; }    /* Solid Orange */
+
     </style>
 </head>
 <body>
 
-<header><h1>POS SYSTEM</h1></header>
-<nav>
-    <a onclick="loadPage('page/customer.html')">Customer</a>
-    <a onclick="loadPage('page/item.html')">Items</a>
-    <a onclick="loadPage('page/place-order.html')">Place Order</a>
-</nav>
+<header>POS SYSTEM</header>
 
-<iframe src="page/customer.html" id="contentFrame"></iframe>
+<div class="main-container">
+    <a href="page/customer.html" class="nav-card customer-card">
+        <i class="fa-solid fa-users"></i>
+        <span>CUSTOMER</span>
+    </a>
 
-<script>
-    function loadPage(url){
-        document.getElementById('contentFrame').src = url;
-    }
-</script>
+    <a href="page/item.html" class="nav-card item-card">
+        <i class="fa-solid fa-boxes-stacked"></i>
+        <span>ITEMS</span>
+    </a>
+
+    <a href="page/place-order.html" class="nav-card order-card">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>PLACE ORDER</span>
+    </a>
+</div>
+
 </body>
 </html>

@@ -2,49 +2,147 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Management - POS System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f4f4f4; }
-    .form-container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 25px; }
-    label { display: block; font-weight: 600; margin-bottom: 8px; }
-    input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-right: 10px; width: 140px; }
-    #item-id { background: #f1f2f6; font-weight: bold; cursor: not-allowed; }
+    /* Dark Theme Base - Customer පිටුවෙන් උපුටා ගන්නා ලදී */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    /* Header & Navigation Bar */
+    header {
+      background: #1f1f1f;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      border-bottom: 1px solid #333;
+    }
+
+    .brand-name { font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; color: #fff; }
+
+    nav { display: flex; gap: 20px; }
+    nav a {
+      color: #bbb;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    nav a:hover, nav a.active { color: #27ae60; }
+
+    /* Main Content Container */
+    .container { padding: 30px; max-width: 1200px; margin: auto; }
+
+    .form-container {
+      background: #1f1f1f;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      margin-bottom: 25px;
+      border: 1px solid #333;
+    }
+
+    /* Customer පිටුවේ වගේම header එක කොළ පාට border එකක් සහිතව */
+    h2 { margin-top: 0; color: #fff; border-left: 4px solid #27ae60; padding-left: 15px; margin-bottom: 25px; }
+
+    .input-group { display: inline-block; margin-right: 15px; margin-bottom: 15px; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; color: #bbb; font-size: 0.85rem; }
+
+    input {
+      padding: 12px;
+      border: 1px solid #444;
+      border-radius: 6px;
+      width: 200px;
+      background: #2c2c2c;
+      color: white;
+      transition: 0.3s;
+    }
+    input:focus { border-color: #27ae60; outline: none; box-shadow: 0 0 8px rgba(39,174,96,0.2); }
+
+    /* Item ID එක සඳහා වෙනස් පාටක් */
+    #item-id { background: #121212; color: #888; cursor: not-allowed; }
 
     .button-row { margin-top: 20px; }
-    button { padding: 10px 22px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: bold; margin-right: 8px; }
-    .btn-save { background: #27ae60; }
-    .btn-update { background: #2980b9; }
-    .btn-delete { background: #e74c3c; }
+    button { padding: 10px 25px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: bold; margin-right: 10px; transition: 0.3s; font-size: 0.9rem; }
 
-    table { width: 100%; border-collapse: collapse; background: white; margin-top: 25px; }
-    th, td { border-bottom: 1px solid #eee; padding: 14px; text-align: left; }
-    th { background: #2c3e50; color: white; }
-    tr:hover { background: #f8f9fa; cursor: pointer; }
+    .btn-save { background: #27ae60; } .btn-save:hover { background: #219150; transform: translateY(-2px); }
+    .btn-update { background: #2980b9; } .btn-update:hover { background: #1f6391; transform: translateY(-2px); }
+    .btn-delete { background: #e74c3c; } .btn-delete:hover { background: #c0392b; transform: translateY(-2px); }
+
+    /* Table Styles */
+    table { width: 100%; border-collapse: collapse; background: #1f1f1f; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    th, td { border-bottom: 1px solid #333; padding: 14px; text-align: left; }
+    th { background: #2c3e50; color: #fff; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+    td { color: #ccc; }
+    tr:hover { background: #2c2c2c; cursor: pointer; }
   </style>
 </head>
 <body>
-<div class="form-container">
-  <h2>Item Management</h2>
-  <div style="display: flex; flex-wrap: wrap; gap: 15px;">
-    <div><label>Item ID</label><input type="text" id="item-id" readonly></div>
-    <div><label>Name</label><input type="text" id="item-name" placeholder="Item Name"></div>
-    <div><label>Price</label><input type="text" id="item-price" placeholder="0.00"></div>
-    <div><label>Qty</label><input type="text" id="item-quantity" placeholder="0"></div>
+
+<header>
+  <div class="brand-name">SYSTEM</div>
+  <nav>
+    <a href="../index.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="customer.html"><i class="fa-solid fa-users"></i> Customer</a>
+    <a href="item.html" class="active"><i class="fa-solid fa-boxes-stacked"></i> Items</a>
+    <a href="place-order.html"><i class="fa-solid fa-cart-shopping"></i> Place Order</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="form-container">
+    <h2><i class="fa-solid fa-box-open"></i> Item Management</h2>
+    <div class="input-group">
+      <label>Item ID</label>
+      <input type="text" id="item-id" readonly>
+    </div>
+    <div class="input-group">
+      <label>Item Name</label>
+      <input type="text" id="item-name" placeholder="Ex: Soap">
+    </div>
+    <div class="input-group">
+      <label>Unit Price</label>
+      <input type="number" id="item-price" placeholder="0.00">
+    </div>
+    <div class="input-group">
+      <label>Quantity</label>
+      <input type="number" id="item-quantity" placeholder="0">
+    </div>
+
+    <div class="button-row">
+      <button class="btn-save" onclick="saveItem()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+      <button class="btn-update" onclick="updateItem()"><i class="fa-solid fa-pen-to-square"></i> Update</button>
+      <button class="btn-delete" onclick="deleteItem()"><i class="fa-solid fa-trash"></i> Delete</button>
+    </div>
   </div>
 
-  <div class="button-row">
-    <button class="btn-save" onclick="saveItem()">Save</button>
-    <button class="btn-update" onclick="updateItem()">Update</button>
-    <button class="btn-delete" onclick="deleteItem()">Delete</button>
-  </div>
+  <table>
+    <thead>
+    <tr>
+      <th><i class="fa-solid fa-hashtag"></i> ID</th>
+      <th><i class="fa-solid fa-tag"></i> Name</th>
+      <th><i class="fa-solid fa-money-bill-wave"></i> Price (LKR)</th>
+      <th><i class="fa-solid fa-layer-group"></i> Qty</th>
+    </tr>
+    </thead>
+    <tbody id="tablebody">
+    </tbody>
+  </table>
 </div>
-
-<table>
-  <thead><tr><th>Item ID</th><th>Name</th><th>Price</th><th>Qty</th></tr></thead>
-  <tbody id="tablebody"></tbody>
-</table>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+  // --- JavaScript Logic ---
   function generateNextItemId(lastId) {
     if (!lastId) return "I001";
     let number = parseInt(lastId.replace("I", "")) + 1;
@@ -72,15 +170,7 @@
     const price = $("#item-price").val();
     const qty = $("#item-quantity").val();
 
-    if (name === "" || price === "" || qty === "") {
-      alert("Fields can't be empty!");
-      return;
-    }
-
-    if (parseFloat(price) <= 0 || parseInt(qty) <= 0) {
-      alert("Price and Quantity must be greater than 0!");
-      return;
-    }
+    if (!name || !price || !qty) { alert("Please fill all fields!"); return; }
 
     $.ajax({
       url: "http://localhost:8080/api/v1/item",
@@ -88,7 +178,7 @@
       contentType: "application/json",
       data: JSON.stringify({ itemId: $("#item-id").val(), itemName: name, itemPrice: price, itemQuantity: qty }),
       success : function (){
-        alert("Item Saved!");
+        alert("Item Saved Successfully!");
         clearFields();
         getAllItem();
       }
@@ -96,25 +186,11 @@
   }
 
   function updateItem(){
-    const name = $("#item-name").val();
-    const price = $("#item-price").val();
-    const qty = $("#item-quantity").val();
-
-    if (name === "" || price === "" || qty === "") {
-      alert("Fields can't be empty!");
-      return;
-    }
-
-    if (parseFloat(price) <= 0 || parseInt(qty) <= 0) {
-      alert("Price and Quantity must be greater than 0!");
-      return;
-    }
-
     $.ajax({
       url: "http://localhost:8080/api/v1/item",
       method: "PUT",
       contentType: "application/json",
-      data: JSON.stringify({ itemId: $("#item-id").val(), itemName: name, itemPrice: price, itemQuantity: qty }),
+      data: JSON.stringify({ itemId: $("#item-id").val(), itemName: $("#item-name").val(), itemPrice: $("#item-price").val(), itemQuantity: $("#item-quantity").val() }),
       success: function () {
         alert("Item Updated!");
         clearFields();
@@ -124,7 +200,7 @@
   }
 
   function deleteItem(){
-    if(confirm("Delete this item?")){
+    if(confirm("Are you sure?")){
       $.ajax({
         url: "http://localhost:8080/api/v1/item/" + $("#item-id").val(),
         method: "DELETE",
@@ -143,5 +219,6 @@
   function clearFields(){ $("#item-name,#item-price,#item-quantity").val(""); }
   $(document).ready(getAllItem);
 </script>
+
 </body>
 </html>

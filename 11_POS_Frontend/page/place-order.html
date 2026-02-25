@@ -2,56 +2,154 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Place Order - POS System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f4f4f4; }
-    .order-container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 25px; }
-    label { display: block; font-weight: 600; margin-bottom: 8px; }
-    input, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-right: 10px; width: 160px; }
+    /* Dark Theme Base - Customer පිටුවෙන් උපුටා ගන්නා ලදී */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    /* Header & Navigation Bar */
+    header {
+      background: #1f1f1f;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      border-bottom: 1px solid #333;
+    }
+
+    .brand-name { font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; color: #fff; }
+
+    nav { display: flex; gap: 20px; }
+    nav a {
+      color: #bbb;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    nav a:hover, nav a.active { color: #27ae60; }
+
+    /* Main Content Container */
+    .container { padding: 30px; max-width: 1200px; margin: auto; }
+
+    .form-container {
+      background: #1f1f1f;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      margin-bottom: 25px;
+      border: 1px solid #333;
+    }
+
+    h2 { margin-top: 0; color: #fff; border-left: 4px solid #27ae60; padding-left: 15px; margin-bottom: 25px; }
+
+    .input-group { display: inline-block; margin-right: 15px; margin-bottom: 15px; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; color: #bbb; font-size: 0.85rem; }
+
+    input, select {
+      padding: 12px;
+      border: 1px solid #444;
+      border-radius: 6px;
+      width: 180px;
+      background: #2c2c2c;
+      color: white;
+      transition: 0.3s;
+    }
+    input:focus, select:focus { border-color: #27ae60; outline: none; }
+
+    #order-item-price { background: #121212; color: #888; cursor: not-allowed; }
 
     .button-row { margin-top: 20px; }
-    .btn-add { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    .btn-confirm { background: #27ae60; color: white; border: none; padding: 15px 30px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 200px; margin-top: 20px; }
+    button { padding: 10px 25px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: bold; margin-right: 10px; transition: 0.3s; font-size: 0.9rem; }
 
-    #cart_table { width: 100%; border-collapse: collapse; background: white; margin-top: 25px; }
-    #cart_table th, #cart_table td { border-bottom: 1px solid #eee; padding: 14px; text-align: left; }
-    #cart_table th { background: #2c3e50; color: white; }
+    .btn-add { background: #3498db; } .btn-add:hover { background: #2980b9; transform: translateY(-2px); }
+    .btn-confirm { background: #27ae60; padding: 15px 30px; width: 100%; margin-top: 20px; font-size: 1.1rem; }
+    .btn-confirm:hover { background: #219150; }
 
-    .btn-edit { background: #f39c12; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
-    .btn-remove { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-    #total_display { color: #e67e22; font-size: 24px; text-align: right; }
+    /* Table Styles */
+    table { width: 100%; border-collapse: collapse; background: #1f1f1f; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    th, td { border-bottom: 1px solid #333; padding: 14px; text-align: left; }
+    th { background: #2c3e50; color: #fff; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+    td { color: #ccc; }
+
+    .btn-edit { background: #f39c12; padding: 5px 12px; font-size: 0.8rem; }
+    .btn-remove { background: #e74c3c; padding: 5px 12px; font-size: 0.8rem; }
+
+    #total_display { color: #27ae60; font-size: 28px; text-align: right; margin-top: 20px; font-weight: bold; }
   </style>
 </head>
 <body>
 
-<div class="order-container">
-  <h2>Place Order</h2>
-  <div style="display: flex; flex-wrap: wrap; gap: 15px;">
-    <div><label>Order ID</label><input type="text" id="order-id" placeholder="O001"></div>
-    <div><label>Customer</label><select id="order-customer-id"><option value="">Select Customer</option></select></div>
-    <div><label>Item</label><select id="order-item-id" onchange="updateItemPrice()"><option value="">Select Item</option></select></div>
-    <div><label>Unit Price</label><input type="text" id="order-item-price" readonly></div>
-    <div><label>Qty</label><input type="number" id="order-qty" placeholder="0"></div>
+<header>
+  <div class="brand-name">SYSTEM</div>
+  <nav>
+    <a href="../index.html"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="customer.html"><i class="fa-solid fa-users"></i> Customer</a>
+    <a href="item.html"><i class="fa-solid fa-boxes-stacked"></i> Items</a>
+    <a href="place-order.html" class="active"><i class="fa-solid fa-cart-shopping"></i> Place Order</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="form-container">
+    <h2><i class="fa-solid fa-cash-register"></i> Place Order</h2>
+    <div class="input-group">
+      <label>Order ID</label>
+      <input type="text" id="order-id" placeholder="O001">
+    </div>
+    <div class="input-group">
+      <label>Customer</label>
+      <select id="order-customer-id">
+        <option value="">Select Customer</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label>Item</label>
+      <select id="order-item-id" onchange="updateItemPrice()">
+        <option value="">Select Item</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label>Unit Price</label>
+      <input type="text" id="order-item-price" readonly>
+    </div>
+    <div class="input-group">
+      <label>Qty</label>
+      <input type="number" id="order-qty" placeholder="0">
+    </div>
+
+    <div class="button-row">
+      <button class="btn-add" onclick="addToCart()"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+    </div>
   </div>
-  <div class="button-row">
-    <button class="btn-add" onclick="addToCart()">Add to Cart</button>
-  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Item ID</th>
+      <th>Unit Price</th>
+      <th>Qty</th>
+      <th>Total</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="cart_body"></tbody>
+  </table>
+
+  <h3 id="total_display">Total: 0.00</h3>
+  <button class="btn-confirm" onclick="confirmOrder()"><i class="fa-solid fa-check-double"></i> Confirm Order</button>
 </div>
-
-<table id="cart_table">
-  <thead>
-  <tr>
-    <th>Item ID</th>
-    <th>Unit Price</th>
-    <th>Qty</th>
-    <th>Total</th>
-    <th>Action</th>
-  </tr>
-  </thead>
-  <tbody id="cart_body"></tbody>
-</table>
-
-<h3 id="total_display">Total: 0.00</h3>
-<button class="btn-confirm" onclick="confirmOrder()">Confirm Order</button>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -102,19 +200,19 @@
       let subTotal = item.unitPrice * item.qty;
       total += subTotal;
       $("#cart_body").append(`
-                <tr>
-                    <td>${item.itemId}</td>
-                    <td>${item.unitPrice.toFixed(2)}</td>
-                    <td>${item.qty}</td>
-                    <td>${subTotal.toFixed(2)}</td>
-                    <td>
-                        <button class="btn-edit" onclick="editCartItem(${index})">Edit</button>
-                        <button class="btn-remove" onclick="removeFromCart(${index})">Remove</button>
-                    </td>
-                </tr>
-            `);
+        <tr>
+            <td>${item.itemId}</td>
+            <td>${item.unitPrice.toFixed(2)}</td>
+            <td>${item.qty}</td>
+            <td>${subTotal.toFixed(2)}</td>
+            <td>
+                <button class="btn-edit" onclick="editCartItem(${index})"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn-remove" onclick="removeFromCart(${index})"><i class="fa-solid fa-trash"></i></button>
+            </td>
+        </tr>
+      `);
     });
-    $("#total_display").text("Total: " + total.toFixed(2));
+    $("#total_display").text("Total: LKR " + total.toFixed(2));
   }
 
   function removeFromCart(index) {
@@ -157,13 +255,13 @@
       contentType: "application/json",
       data: JSON.stringify(orderData),
       success: function() {
-        alert("Order Placed!");
+        alert("Order Placed Successfully!");
         cart = [];
         renderCart();
         $("#order-id, #order-customer-id").val("");
       },
       error: function() {
-        alert("Order Failed!");
+        alert("Order Failed! Check backend connection.");
       }
     });
   }
